@@ -141,54 +141,59 @@ export default function Home() {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
       {/* Sidebar - Desktop */}
-      <aside className="hidden md:flex flex-col w-[400px] border-r border-border bg-background/50 backdrop-blur-xl h-full z-10 shadow-xl">
+      <aside className="hidden md:flex flex-col w-[400px] border-r border-border bg-background/50 backdrop-blur-xl h-full z-[100] shadow-xl">
         <SidebarContent />
       </aside>
 
       {/* Main Map Area */}
       <main className="flex-1 relative h-full w-full">
-        {/* Mobile Menu Trigger */}
-        <div className="md:hidden absolute top-4 left-4 z-[1001]">
-          <Sheet open={isMobileListOpen} onOpenChange={setIsMobileListOpen}>
-            <SheetTrigger asChild>
-              <Button size="icon" variant="secondary" className="shadow-lg bg-background/80 backdrop-blur-md border border-border h-12 w-12 rounded-xl">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="p-0 w-[85vw] sm:w-[400px] flex flex-col">
-              <SidebarContent />
-            </SheetContent>
-          </Sheet>
-        </div>
+        {/* Top Controls Overlay */}
+        <div className="absolute top-4 left-4 right-4 z-[50] flex items-center justify-between gap-4 pointer-events-none">
+          {/* Mobile Menu Trigger */}
+          <div className="md:hidden flex-shrink-0 pointer-events-auto">
+            <Sheet open={isMobileListOpen} onOpenChange={setIsMobileListOpen}>
+              <SheetTrigger asChild>
+                <Button size="icon" variant="secondary" className="shadow-lg bg-background/80 backdrop-blur-md border border-border h-12 w-12 rounded-xl">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0 w-[85vw] sm:w-[400px] flex flex-col">
+                <SidebarContent />
+              </SheetContent>
+            </Sheet>
+          </div>
 
-        {/* Mobile Theme Toggle */}
-        <div className="md:hidden absolute top-4 right-4 z-[1001]">
-          <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-3 h-12 w-12 flex items-center justify-center rounded-xl bg-background/80 backdrop-blur-md border border-border shadow-lg text-foreground"
-          >
-            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          </button>
-        </div>
+          {/* Filter Buttons Overlay */}
+          <div className="flex-1 flex justify-center pointer-events-auto overflow-hidden">
+            <div className="flex gap-2 bg-background/80 backdrop-blur-md p-1.5 rounded-2xl border border-border shadow-xl overflow-x-auto no-scrollbar max-w-full">
+              {filterButtons.map((btn) => (
+                <button
+                  key={btn.id}
+                  onClick={() => setFilterType(btn.id)}
+                  className={`
+                    flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap
+                    ${filterType === btn.id 
+                      ? "bg-primary text-primary-foreground shadow-lg scale-105" 
+                      : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                    }
+                  `}
+                >
+                  <span>{btn.icon}</span>
+                  <span className="hidden xs:inline">{btn.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
 
-        {/* Filter Buttons Overlay */}
-        <div className="absolute top-20 md:top-4 left-1/2 -translate-x-1/2 z-[1000] flex gap-2 bg-background/80 backdrop-blur-md p-1.5 rounded-2xl border border-border shadow-xl overflow-x-auto max-w-[90vw] no-scrollbar">
-          {filterButtons.map((btn) => (
+          {/* Theme Toggle Button */}
+          <div className="flex-shrink-0 pointer-events-auto">
             <button
-              key={btn.id}
-              onClick={() => setFilterType(btn.id)}
-              className={`
-                flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap
-                ${filterType === btn.id 
-                  ? "bg-primary text-primary-foreground shadow-lg scale-105" 
-                  : "hover:bg-muted text-muted-foreground hover:text-foreground"
-                }
-              `}
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-3 h-12 w-12 flex items-center justify-center rounded-xl bg-background/80 backdrop-blur-md border border-border shadow-lg text-foreground transition-all hover-elevate active-elevate-2"
             >
-              <span>{btn.icon}</span>
-              <span className="hidden xs:inline">{btn.label}</span>
+              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
-          ))}
+          </div>
         </div>
 
         <MapContainer 
