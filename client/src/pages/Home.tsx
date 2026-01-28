@@ -41,19 +41,38 @@ export default function Home() {
   const { data: locations, isLoading, error } = useLocations();
   const [search, setSearch] = useState("");
   const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(null);
+  const [filterType, setFilterType] = useState<string>("all");
 
   const filteredLocations = useMemo(() => {
     if (!locations) return [];
-    if (!search) return locations;
-    return locations.filter(loc => 
+    let filtered = locations;
+    
+    // Filter by type
+    if (filterType === "fast_food") {
+      filtered = filtered.filter(loc => loc.category === "burger" || loc.category === "chicken" || loc.category === "sandwich" || loc.category === "dumplings" || loc.category === "beef_bowl" || loc.category === "breakfast");
+    } else if (filterType === "cafe") {
+      filtered = filtered.filter(loc => loc.category === "coffee" || loc.category === "independent" || loc.category === "tea" || loc.category === "bakery");
+    } else if (filterType === "bubble_tea") {
+      filtered = filtered.filter(loc => loc.category === "bubble_tea");
+    }
+
+    if (!search) return filtered;
+    return filtered.filter(loc => 
       loc.name.toLowerCase().includes(search.toLowerCase()) || 
       loc.category?.toLowerCase().includes(search.toLowerCase())
     );
-  }, [locations, search]);
+  }, [locations, search, filterType]);
 
   const handleFlyTo = (lat: number, lng: number) => {
     setSelectedLocation([lat, lng]);
   };
+
+  const filterButtons = [
+    { id: "all", label: "全部", icon: "🍱" },
+    { id: "fast_food", label: "速食", icon: "🍔" },
+    { id: "cafe", label: "咖啡", icon: "☕" },
+    { id: "bubble_tea", label: "手搖", icon: "🧋" },
+  ];
 
   if (isLoading) {
     return (
@@ -129,6 +148,27 @@ export default function Home() {
 
       {/* Main Map Area */}
       <main className="flex-1 relative h-full w-full">
+        {/* Filter Buttons Overlay */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex gap-2 bg-background/80 backdrop-blur-md p-1.5 rounded-2xl border border-border shadow-xl overflow-x-auto max-w-[90vw] no-scrollbar">
+          {filterButtons.map((btn) => (
+            <button
+              key={btn.id}
+              onClick={() => setFilterType(btn.id)}
+              className={`
+                flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap
+                ${filterType === btn.id 
+                  ? "bg-primary text-primary-foreground shadow-lg scale-105" 
+                  : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                }
+              `}
+              data-testid={`button-filter-${btn.id}`}
+            >
+              <span>{btn.icon}</span>
+              <span>{btn.label}</span>
+            </button>
+          ))}
+        </div>
+
         {/* Mobile Header / Search Overlay */}
         <div className="md:hidden absolute top-4 left-4 right-4 z-[1000] flex gap-2">
            <div className="flex-1 relative shadow-lg rounded-xl">
