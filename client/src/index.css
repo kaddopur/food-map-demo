@@ -9,55 +9,63 @@
   --font-display: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
 
-  /* Vibrant, food-app inspired palette */
-  --background: 30 50% 98%;
-  --foreground: 222 47% 11%;
+  /* Material Theme - Light Mode (seed: #6B5FE5) */
+  --background: 270 100% 99%; /* #FCF8FF */
+  --foreground: 252 9% 12%; /* #1C1B20 */
   
-  --primary: 15 90% 60%; /* Warm Orange-Red */
-  --primary-foreground: 0 0% 100%;
+  --primary: 244 22% 46%; /* #5C5891 */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF */
   
-  --secondary: 45 90% 96%; /* Soft Yellow-Cream */
-  --secondary-foreground: 24 10% 10%;
+  --secondary: 252 59% 92%; /* #E4DFF9 - secondaryContainer */
+  --secondary-foreground: 246 13% 31%; /* #474559 */
   
-  --muted: 30 20% 96%;
-  --muted-foreground: 215 16% 47%;
+  --muted: 262 18% 90%; /* #E5E1EC - surfaceVariant */
+  --muted-foreground: 249 4% 48%; /* #787680 - outline */
   
-  --accent: 170 60% 45%; /* Teal for contrast */
-  --accent-foreground: 0 0% 100%;
+  --accent: 332 20% 40%; /* #7B5266 - tertiary */
+  --accent-foreground: 0 0% 100%; /* #FFFFFF */
   
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 210 40% 98%;
+  --card: 270 22% 94%; /* #F0ECF4 - surfaceContainer */
+  --card-foreground: 252 9% 12%; /* #1C1B20 */
+  --card-border: 253 9% 80%; /* #C8C5D0 - outlineVariant */
   
-  --border: 30 20% 90%;
-  --input: 30 20% 90%;
-  --ring: 15 90% 60%;
+  --destructive: 0 77% 42%; /* #BA1A1A */
+  --destructive-foreground: 0 0% 100%;
+  
+  --border: 253 9% 80%; /* #C8C5D0 - outlineVariant */
+  --input: 253 9% 80%;
+  --ring: 244 22% 46%; /* primary */
   
   --radius: 0.75rem;
 }
 
 .dark {
-  --background: 260 8% 8%; /* #121212 - Material Design baseline */
-  --foreground: 0 0% 100%;
+  /* Material Theme - Dark Mode (seed: #6B5FE5) */
+  --background: 248 16% 8%; /* #131318 */
+  --foreground: 260 10% 90%; /* #E5E1E9 */
   
-  --primary: 265 100% 80%; /* Material Dark Theme Primary: Light Purple */
-  --primary-foreground: 260 10% 10%;
+  --primary: 246 100% 88%; /* #C5C0FF */
+  --primary-foreground: 246 36% 28%; /* #2D2960 */
   
-  --secondary: 260 8% 14%; /* Elevated surface */
-  --secondary-foreground: 0 0% 100%;
+  --secondary: 246 12% 31%; /* #474559 - secondaryContainer */
+  --secondary-foreground: 250 23% 81%; /* #C8C4DC */
   
-  --card: 260 8% 12%; /* Material surface */
-  --card-foreground: 0 0% 87%; /* High emphasis text */
-  --card-border: 260 8% 18%;
+  --card: 250 14% 14%; /* #201F25 - surfaceContainer */
+  --card-foreground: 260 10% 90%; /* #E5E1E9 */
+  --card-border: 247 6% 29%; /* #47464F - surfaceVariant */
   
-  --muted: 260 8% 16%;
-  --muted-foreground: 0 0% 60%; /* Medium emphasis text */
+  --muted: 250 8% 17%; /* #2A292F - surfaceContainerHigh */
+  --muted-foreground: 258 4% 58%; /* #928F99 - outline */
   
-  --accent: 180 100% 80%; /* Cyan accent */
-  --accent-foreground: 260 10% 10%;
+  --accent: 333 54% 82%; /* #EBB8D0 - tertiary */
+  --accent-foreground: 332 30% 27%; /* #472538 */
   
-  --border: 260 8% 18%;
-  --input: 260 8% 18%;
-  --ring: 265 100% 80%;
+  --destructive: 6 100% 84%; /* #FFB4AB */
+  --destructive-foreground: 0 75% 21%; /* #690005 */
+  
+  --border: 247 6% 29%; /* #47464F - outlineVariant */
+  --input: 247 6% 29%;
+  --ring: 246 100% 88%; /* primary */
 }
 
 @layer base {
@@ -72,7 +80,7 @@
   }
 }
 
-/* Custom Map Marker Styles if needed */
+/* Custom Map Marker Styles */
 .leaflet-popup-content-wrapper {
   @apply rounded-xl border border-border shadow-2xl p-0 overflow-hidden bg-background/95 backdrop-blur-md !font-sans;
 }
@@ -87,4 +95,13 @@
 }
 .leaflet-container {
   @apply font-sans z-0;
+}
+
+/* Hide scrollbar for filter buttons */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
