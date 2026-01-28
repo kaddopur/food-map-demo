@@ -10,7 +10,7 @@ interface LocationCardProps {
 export function LocationCard({ location, onFlyTo }: LocationCardProps) {
   return (
     <div 
-      className="flex items-center gap-3 px-4 py-3 bg-background hover:bg-secondary/50 active:bg-secondary transition-colors cursor-pointer"
+      className="group flex items-center gap-3 px-4 py-3 bg-background hover:bg-secondary/50 active:bg-secondary transition-colors cursor-pointer"
       onClick={() => onFlyTo(location.latitude, location.longitude)}
       data-testid={`list-item-location-${location.id}`}
     >
@@ -46,7 +46,7 @@ export function LocationCard({ location, onFlyTo }: LocationCardProps) {
       
       {/* Right Area - Navigation indicator */}
       <div className="flex-shrink-0">
-        <Navigation className="h-5 w-5 text-muted-foreground/40" />
+        <Navigation className="h-5 w-5 text-muted-foreground/40 group-hover:text-primary transition-colors" />
       </div>
     </div>
   );
