@@ -33,7 +33,7 @@ function MapController({
       if (location) {
         map.flyTo([location.latitude, location.longitude], 18, {
           animate: true,
-          duration: 1.5
+          duration: 0.5
         });
         
         // Open popup after flying
@@ -42,7 +42,7 @@ function MapController({
           if (marker) {
             marker.openPopup();
           }
-        }, 1600);
+        }, 600);
       }
     }
   }, [selectedLocationId, locations, map, markerRefs]);
