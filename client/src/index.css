@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 @import 'leaflet/dist/leaflet.css';
 
 @tailwind base;
@@ -6,8 +5,8 @@
 @tailwind utilities;
 
 :root {
-  --font-display: 'Outfit', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-display: 'LINE Seed JP', sans-serif;
+  --font-body: 'LINE Seed JP', sans-serif;
 
   /* Material Theme - Light Mode (seed: #6B5FE5) */
   --background: 270 100% 99%; /* #FCF8FF */
