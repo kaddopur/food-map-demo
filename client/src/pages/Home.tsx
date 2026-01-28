@@ -35,12 +35,16 @@ export default function Home() {
   const { data: locations, isLoading, error } = useLocations();
   const { theme, setTheme } = useTheme();
   const [search, setSearch] = useState("");
+  const [isComposing, setIsComposing] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
   const [isMobileListOpen, setIsMobileListOpen] = useState(false);
 
   const filteredLocations = useMemo(() => {
     if (!locations) return [];
+    // Don't update filtered results while the user is still composing Chinese characters
+    if (isComposing) return filteredLocations || [];
+
     let filtered = locations;
     
     // Filter by type
@@ -95,6 +99,8 @@ export default function Home() {
             className="pl-9 rounded-xl bg-secondary/50 border-transparent focus:bg-background transition-all"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onCompositionStart={() => setIsComposing(true)}
+            onCompositionEnd={() => setIsComposing(false)}
           />
         </div>
       </div>
@@ -204,6 +210,7 @@ export default function Home() {
           scrollWheelZoom={true} 
           className="h-full w-full z-0"
           zoomControl={false}
+          trackResize={true}
         >
           <TileLayer
             attribution={theme === "dark" ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>' : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}
