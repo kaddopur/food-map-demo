@@ -31,7 +31,7 @@ function MapController({
     if (selectedLocationId !== null) {
       const location = locations.find(loc => loc.id === selectedLocationId);
       if (location) {
-        map.flyTo([location.latitude, location.longitude], 18, {
+        map.setView([location.latitude, location.longitude], 17, {
           animate: true,
           duration: 0.8
         });
