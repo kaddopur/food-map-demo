@@ -167,7 +167,6 @@ export default function Home() {
         </div>
 
         <MapContainer 
-          key={theme} 
           center={CENTER} 
           zoom={ZOOM} 
           scrollWheelZoom={true} 
@@ -176,7 +175,8 @@ export default function Home() {
           trackResize={true}
         >
           <TileLayer
-            attribution={theme === "dark" ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>' : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}
+            key={theme}
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
             url={theme === "dark" ? TILE_DARK : TILE_LIGHT}
           />
           
