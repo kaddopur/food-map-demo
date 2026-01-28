@@ -42,9 +42,7 @@ export default function Home() {
 
   const filteredLocations = useMemo(() => {
     if (!locations) return [];
-    // Don't update filtered results while the user is still composing Chinese characters
-    if (isComposing) return filteredLocations || [];
-
+    
     let filtered = locations;
     
     // Filter by type
@@ -62,6 +60,12 @@ export default function Home() {
       loc.category?.toLowerCase().includes(search.toLowerCase())
     );
   }, [locations, search, filterType]);
+
+  // Use a second memo to handle composition state without circular reference
+  const displayedLocations = useMemo(() => {
+    if (isComposing) return filteredLocations; // This is fine now as filteredLocations is defined above
+    return filteredLocations;
+  }, [filteredLocations, isComposing]);
 
   const handleFlyTo = (lat: number, lng: number) => {
     setSelectedLocation([lat, lng]);
@@ -106,13 +110,13 @@ export default function Home() {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {filteredLocations.length === 0 ? (
+        {displayedLocations.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
             <MapIcon className="h-12 w-12 mx-auto mb-3 opacity-20" />
             <p>No locations found</p>
           </div>
         ) : (
-          filteredLocations.map((location) => (
+          displayedLocations.map((location) => (
             <LocationCard 
               key={location.id} 
               location={location} 
@@ -217,7 +221,7 @@ export default function Home() {
             url={theme === "dark" ? TILE_DARK : TILE_LIGHT}
           />
           
-          {filteredLocations.map((location) => {
+          {displayedLocations.map((location) => {
             const customIcon = L.divIcon({
               html: `<div style="font-size: 24px; background: ${theme === 'dark' ? '#1e1e1e' : 'white'}; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 2px solid ${theme === 'dark' ? 'hsl(265, 100%, 80%)' : 'hsl(var(--primary))'}; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">${location.icon || "📍"}</div>`,
               className: "custom-div-icon",
