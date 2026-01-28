@@ -1,6 +1,6 @@
 import { Location } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
-import { ChevronRight } from "lucide-react";
+import { Navigation } from "lucide-react";
 
 interface LocationCardProps {
   location: Location;
@@ -45,8 +45,8 @@ export function LocationCard({ location, onFlyTo }: LocationCardProps) {
       </div>
       
       {/* Right Area - Navigation indicator */}
-      <div className="flex-shrink-0">
-        <ChevronRight className="h-5 w-5 text-muted-foreground/50" />
+      <div className="flex-shrink-0 h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
+        <Navigation className="h-4 w-4 text-primary" />
       </div>
     </div>
   );
