@@ -118,7 +118,7 @@ export function SidebarContent({ locations, onSearch, onFlyTo, initialSearch = "
             <p>找不到地點</p>
           </div>
         ) : (
-          <div className="divide-y divide-border">
+          <div>
             {locations.map((location) => (
               <LocationCard 
                 key={location.id} 
