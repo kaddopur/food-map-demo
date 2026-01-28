@@ -154,7 +154,7 @@ export default function Home() {
                   variant="ghost" 
                   size="icon" 
                   onClick={() => setIsMobileListOpen(false)} 
-                  className="rounded-xl bg-background/50 backdrop-blur-md border border-border h-10 w-10 hover:bg-background/80"
+                  className="rounded-xl h-10 w-10 hover:bg-background/80"
                 >
                   <X className="h-5 w-5" />
                 </Button>
