@@ -8,63 +8,63 @@
   --font-display: 'LINE Seed JP', sans-serif;
   --font-body: 'LINE Seed JP', sans-serif;
 
-  /* Material Theme - Light Mode (seed: #6B5FE5) */
-  --background: 270 100% 99%; /* #FCF8FF */
-  --foreground: 252 9% 12%; /* #1C1B20 */
+  /* LINE Design System - Light Mode */
+  --background: 0 0% 100%; /* White #FFFFFF */
+  --foreground: 0 0% 7%; /* Gray 900 #111111 */
   
-  --primary: 244 22% 46%; /* #5C5891 */
-  --primary-foreground: 0 0% 100%; /* #FFFFFF */
+  --primary: 145 93% 40%; /* LINE Green #06C755 */
+  --primary-foreground: 0 0% 100%; /* White */
   
-  --secondary: 252 59% 92%; /* #E4DFF9 - secondaryContainer */
-  --secondary-foreground: 246 13% 31%; /* #474559 */
+  --secondary: 0 0% 96%; /* Gray 150 #F5F5F5 */
+  --secondary-foreground: 0 0% 33%; /* Gray 700 #555555 */
   
-  --muted: 262 18% 90%; /* #E5E1EC - surfaceVariant */
-  --muted-foreground: 249 4% 48%; /* #787680 - outline */
+  --muted: 0 0% 94%; /* Gray 200 #EFEFEF */
+  --muted-foreground: 0 0% 47%; /* Gray 600 #777777 */
   
-  --accent: 332 20% 40%; /* #7B5266 - tertiary */
-  --accent-foreground: 0 0% 100%; /* #FFFFFF */
+  --accent: 222 100% 69%; /* Blue 500 #638DFF */
+  --accent-foreground: 0 0% 100%; /* White */
   
-  --card: 270 22% 94%; /* #F0ECF4 - surfaceContainer */
-  --card-foreground: 252 9% 12%; /* #1C1B20 */
-  --card-border: 253 9% 80%; /* #C8C5D0 - outlineVariant */
+  --card: 0 0% 99%; /* Gray 100 #FCFCFC */
+  --card-foreground: 0 0% 7%; /* Gray 900 #111111 */
+  --card-border: 0 0% 87%; /* Gray 300 #DFDFDF */
   
-  --destructive: 0 77% 42%; /* #BA1A1A */
+  --destructive: 353 100% 60%; /* Red 400 #FF334B */
   --destructive-foreground: 0 0% 100%;
   
-  --border: 253 9% 80%; /* #C8C5D0 - outlineVariant */
-  --input: 253 9% 80%;
-  --ring: 244 22% 46%; /* primary */
+  --border: 0 0% 87%; /* Gray 300 #DFDFDF */
+  --input: 0 0% 91%; /* Gray 250 #E8E8E8 */
+  --ring: 145 93% 40%; /* LINE Green */
   
   --radius: 0.75rem;
 }
 
 .dark {
-  /* Material Theme - Dark Mode (seed: #6B5FE5) */
-  --background: 248 16% 8%; /* #131318 */
-  --foreground: 260 10% 90%; /* #E5E1E9 */
+  /* LINE Design System - Dark Mode */
+  --background: 0 0% 7%; /* Gray 900 #111111 */
+  --foreground: 0 0% 100%; /* White #FFFFFF */
   
-  --primary: 246 100% 88%; /* #C5C0FF */
-  --primary-foreground: 246 36% 28%; /* #2D2960 */
+  --primary: 145 93% 40%; /* LINE Green #06C755 */
+  --primary-foreground: 0 0% 100%; /* White */
   
-  --secondary: 246 12% 31%; /* #474559 - secondaryContainer */
-  --secondary-foreground: 250 23% 81%; /* #C8C4DC */
+  --secondary: 0 0% 22%; /* Gray 770 #383838 */
+  --secondary-foreground: 0 0% 96%; /* Gray 150 #F5F5F5 */
   
-  --card: 250 14% 14%; /* #201F25 - surfaceContainer */
-  --card-foreground: 260 10% 90%; /* #E5E1E9 */
-  --card-border: 247 6% 29%; /* #47464F - surfaceVariant */
+  --card: 0 0% 12%; /* Gray 850 #1F1F1F */
+  --card-foreground: 0 0% 100%; /* White */
+  --card-border: 0 0% 25%; /* Gray 750 #3F3F3F */
   
-  --muted: 250 8% 17%; /* #2A292F - surfaceContainerHigh */
-  --muted-foreground: 258 4% 58%; /* #928F99 - outline */
+  --muted: 0 0% 16%; /* Gray 800 #2A2A2A */
+  --muted-foreground: 0 0% 58%; /* Gray 500 #949494 */
   
-  --accent: 333 54% 82%; /* #EBB8D0 - tertiary */
-  --accent-foreground: 332 30% 27%; /* #472538 */
+  --accent: 222 100% 79%; /* Blue 400 #96B2FF */
+  --accent-foreground: 0 0% 7%; /* Gray 900 */
   
-  --destructive: 6 100% 84%; /* #FFB4AB */
-  --destructive-foreground: 0 75% 21%; /* #690005 */
+  --destructive: 353 100% 60%; /* Red 400 #FF334B */
+  --destructive-foreground: 0 0% 100%;
   
-  --border: 247 6% 29%; /* #47464F - outlineVariant */
-  --input: 247 6% 29%;
-  --ring: 246 100% 88%; /* primary */
+  --border: 0 0% 25%; /* Gray 750 #3F3F3F */
+  --input: 0 0% 22%; /* Gray 770 #383838 */
+  --ring: 145 93% 40%; /* LINE Green */
 }
 
 @layer base {
