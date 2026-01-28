@@ -26,18 +26,28 @@ function MapController({
   markerRefs: React.MutableRefObject<Map<number, L.Marker>>;
 }) {
   const map = useMap();
+  const popupTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
+    // Clear any pending popup timeout when selection changes
+    if (popupTimeoutRef.current) {
+      clearTimeout(popupTimeoutRef.current);
+      popupTimeoutRef.current = null;
+    }
+    
     if (selectedLocationId !== null) {
       const location = locations.find(loc => loc.id === selectedLocationId);
       if (location) {
+        // Stop any ongoing animation
+        map.stop();
+        
         map.setView([location.latitude, location.longitude], 17, {
           animate: true,
           duration: 0.8
         });
         
-        // Open popup after flying
-        setTimeout(() => {
+        // Open popup after animation completes
+        popupTimeoutRef.current = setTimeout(() => {
           const marker = markerRefs.current.get(selectedLocationId);
           if (marker) {
             marker.openPopup();
@@ -45,6 +55,13 @@ function MapController({
         }, 900);
       }
     }
+    
+    // Cleanup on unmount
+    return () => {
+      if (popupTimeoutRef.current) {
+        clearTimeout(popupTimeoutRef.current);
+      }
+    };
   }, [selectedLocationId, locations, map, markerRefs]);
   
   return null;
