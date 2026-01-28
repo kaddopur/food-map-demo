@@ -11,13 +11,13 @@ interface LocationCardProps {
 
 export function LocationCard({ location, onFlyTo }: LocationCardProps) {
   return (
-    <Card className="overflow-hidden border-none shadow-md hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm group">
+    <Card className="overflow-hidden border-none shadow-md hover:shadow-lg transition-all duration-300 bg-card/50 backdrop-blur-sm group">
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start gap-2">
           <CardTitle className="text-lg font-bold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
             {location.name}
           </CardTitle>
-          <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+          <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors border-none uppercase text-[10px] font-bold">
             {location.category}
           </Badge>
         </div>
@@ -27,16 +27,16 @@ export function LocationCard({ location, onFlyTo }: LocationCardProps) {
           {location.description || "No description provided."}
         </p>
         
-        <div className="flex items-center justify-between text-xs text-muted-foreground mt-2">
+        <div className="flex items-center justify-between text-xs text-muted-foreground mt-2 pt-2 border-t border-border/50">
           <div className="flex items-center gap-1">
-            <MapPin className="h-3 w-3" />
+            <MapPin className="h-3 w-3 text-primary/70" />
             <span>{location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}</span>
           </div>
           
           <Button 
             variant="ghost" 
             size="sm" 
-            className="h-8 w-8 p-0 rounded-full hover:bg-primary/10 hover:text-primary"
+            className="h-8 w-8 p-0 rounded-full hover:bg-primary/10 hover:text-primary text-muted-foreground"
             onClick={() => onFlyTo(location.latitude, location.longitude)}
           >
             <Navigation className="h-4 w-4" />
