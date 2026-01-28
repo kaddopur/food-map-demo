@@ -5,22 +5,12 @@ import { AddLocationDialog } from "@/components/AddLocationDialog";
 import { LocationCard } from "@/components/LocationCard";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, UtensilsCrossed, Map as MapIcon, Loader2, MapPin, Building2, Tag, Sun, Moon } from "lucide-react";
+import { Search, UtensilsCrossed, Map as MapIcon, Loader2, MapPin, Building2, Tag, Sun, Moon, List, Menu } from "lucide-react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useTheme } from "@/hooks/use-theme";
-
-// Fix Leaflet's default icon path issues in React
-import icon from "leaflet/dist/images/marker-icon.png";
-import iconShadow from "leaflet/dist/images/marker-shadow.png";
-
-let DefaultIcon = L.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
-L.Marker.prototype.options.icon = DefaultIcon;
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 // Initial Center
 const CENTER: [number, number] = [25.0771545, 121.5733916];
@@ -47,6 +37,7 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
+  const [isMobileListOpen, setIsMobileListOpen] = useState(false);
 
   const filteredLocations = useMemo(() => {
     if (!locations) return [];
@@ -79,6 +70,69 @@ export default function Home() {
     { id: "bubble_tea", label: "手搖", icon: "🧋" },
   ];
 
+  const handleMobileFlyTo = (lat: number, lng: number) => {
+    handleFlyTo(lat, lng);
+    setIsMobileListOpen(false);
+  };
+
+  const SidebarContent = () => (
+    <>
+      <div className="p-6 border-b border-border bg-card/50">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary/10 p-2.5 rounded-xl">
+              <UtensilsCrossed className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-display font-bold text-foreground">Food Map</h1>
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Company Favorites</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="p-2.5 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors text-foreground shadow-sm"
+            title="Toggle Theme"
+          >
+            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </button>
+        </div>
+        
+        <div className="relative">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input 
+            placeholder="Search places, categories..." 
+            className="pl-9 rounded-xl bg-secondary/50 border-transparent focus:bg-background transition-all"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {filteredLocations.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground">
+            <MapIcon className="h-12 w-12 mx-auto mb-3 opacity-20" />
+            <p>No locations found</p>
+          </div>
+        ) : (
+          filteredLocations.map((location) => (
+            <LocationCard 
+              key={location.id} 
+              location={location} 
+              onFlyTo={window.innerWidth < 768 ? handleMobileFlyTo : handleFlyTo}
+            />
+          ))
+        )}
+      </div>
+      
+      <div className="p-4 border-t border-border bg-card/50 backdrop-blur-md">
+        <div className="w-full flex justify-center">
+          <AddLocationDialog />
+        </div>
+      </div>
+    </>
+  );
+
   if (isLoading) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-background">
@@ -90,92 +144,38 @@ export default function Home() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="h-screen w-full flex items-center justify-center bg-destructive/5 text-destructive">
-        <div className="text-center space-y-2">
-          <p className="font-bold text-xl">Failed to load map data</p>
-          <p className="text-sm opacity-80">Please try refreshing the page</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex flex-col w-[400px] border-r border-border bg-background/50 backdrop-blur-xl h-full z-10 shadow-xl">
-        <div className="p-6 border-b border-border bg-card/50">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary/10 p-2.5 rounded-xl">
-                <UtensilsCrossed className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-display font-bold text-foreground">Food Map</h1>
-                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Company Favorites</p>
-              </div>
-            </div>
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2.5 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors text-foreground shadow-sm"
-              title="Toggle Theme"
-              data-testid="button-theme-toggle"
-            >
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </button>
-          </div>
-          
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search places, categories..." 
-              className="pl-9 rounded-xl bg-secondary/50 border-transparent focus:bg-background transition-all"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {filteredLocations.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <MapIcon className="h-12 w-12 mx-auto mb-3 opacity-20" />
-              <p>No locations found</p>
-            </div>
-          ) : (
-            filteredLocations.map((location) => (
-              <LocationCard 
-                key={location.id} 
-                location={location} 
-                onFlyTo={handleFlyTo}
-              />
-            ))
-          )}
-        </div>
-        
-        <div className="p-4 border-t border-border bg-card/50 backdrop-blur-md">
-          <div className="w-full flex justify-center">
-            <AddLocationDialog />
-          </div>
-        </div>
+        <SidebarContent />
       </aside>
 
       {/* Main Map Area */}
       <main className="flex-1 relative h-full w-full">
-        {/* Theme Toggle Mobile */}
-        <div className="md:hidden absolute top-4 right-4 z-[1001]">
+        {/* Mobile Header Buttons */}
+        <div className="md:hidden absolute top-4 left-4 right-4 z-[1001] flex justify-between items-start pointer-events-none">
+          <Sheet open={isMobileListOpen} onOpenChange={setIsMobileListOpen}>
+            <SheetTrigger asChild>
+              <Button size="icon" variant="secondary" className="pointer-events-auto shadow-lg bg-background/80 backdrop-blur-md border border-border">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 w-[85vw] sm:w-[400px] flex flex-col">
+              <SidebarContent />
+            </SheetContent>
+          </Sheet>
+
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-3 rounded-xl bg-background/80 backdrop-blur-md border border-border shadow-lg text-foreground"
-            data-testid="button-theme-toggle-mobile"
+            className="p-3 rounded-xl bg-background/80 backdrop-blur-md border border-border shadow-lg text-foreground pointer-events-auto"
           >
             {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </button>
         </div>
 
         {/* Filter Buttons Overlay */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex gap-2 bg-background/80 backdrop-blur-md p-1.5 rounded-2xl border border-border shadow-xl overflow-x-auto max-w-[70vw] md:max-w-[90vw] no-scrollbar">
+        <div className="absolute top-[72px] md:top-4 left-1/2 -translate-x-1/2 z-[1000] flex gap-2 bg-background/80 backdrop-blur-md p-1.5 rounded-2xl border border-border shadow-xl overflow-x-auto max-w-[90vw] no-scrollbar">
           {filterButtons.map((btn) => (
             <button
               key={btn.id}
@@ -187,29 +187,15 @@ export default function Home() {
                   : "hover:bg-muted text-muted-foreground hover:text-foreground"
                 }
               `}
-              data-testid={`button-filter-${btn.id}`}
             >
               <span>{btn.icon}</span>
-              <span className="hidden sm:inline">{btn.label}</span>
+              <span className="hidden xs:inline">{btn.label}</span>
             </button>
           ))}
         </div>
 
-        {/* Mobile Header / Search Overlay */}
-        <div className="md:hidden absolute top-4 left-4 right-20 z-[1000] flex gap-2">
-           <div className="flex-1 relative shadow-lg rounded-xl">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
-            <Input 
-              placeholder="Search..." 
-              className="pl-9 h-12 rounded-xl bg-background/80 backdrop-blur-md border-border shadow-sm text-base"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-           </div>
-        </div>
-
         <MapContainer 
-          key={theme} // Force re-render on theme change to update tiles
+          key={theme} 
           center={CENTER} 
           zoom={ZOOM} 
           scrollWheelZoom={true} 
