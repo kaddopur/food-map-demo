@@ -37,9 +37,11 @@ export function LocationCard({ location, onFlyTo }: LocationCardProps) {
         </div>
         
         {/* Description / Brand */}
-        <p className="text-sm text-muted-foreground truncate mt-0.5">
-          {location.brand || location.address || "No description"}
-        </p>
+        {(location.brand || location.address) && (
+          <p className="text-sm text-muted-foreground truncate mt-0.5">
+            {location.brand || location.address}
+          </p>
+        )}
       </div>
       
       {/* Right Area - Navigation indicator */}
