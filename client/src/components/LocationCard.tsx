@@ -36,10 +36,10 @@ export function LocationCard({ location, onSelect }: LocationCardProps) {
           )}
         </div>
         
-        {/* Description / Brand */}
-        {(location.brand || location.address) && (
+        {/* Description - Address */}
+        {location.address && (
           <p className="text-sm text-muted-foreground truncate mt-0.5">
-            {location.brand || location.address}
+            {location.address}
           </p>
         )}
       </div>
