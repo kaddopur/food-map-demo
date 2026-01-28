@@ -148,7 +148,7 @@ export default function Home() {
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="p-0 w-[85vw] sm:w-[400px] flex flex-col border-none">
+              <SheetContent side="left" className="p-0 w-[85vw] sm:w-[400px] flex flex-col border-none [&>button]:hidden">
               <div className="absolute top-4 right-4 z-50">
                 <Button 
                   variant="ghost" 
