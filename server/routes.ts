@@ -56,11 +56,14 @@ async function seedDatabase() {
       for (const place of data.places) {
         await storage.createLocation({
           name: place.name,
-          description: place.address || place.brand || "",
+          description: place.description || "",
           latitude: place.lat,
           longitude: place.lng,
           category: place.category,
-          icon: place.icon
+          icon: place.icon,
+          brand: place.brand,
+          address: place.address,
+          tags: place.tags || [],
         });
       }
       console.log(`Seeded ${data.places.length} places from JSON`);

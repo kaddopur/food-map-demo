@@ -5,7 +5,7 @@ import { AddLocationDialog } from "@/components/AddLocationDialog";
 import { LocationCard } from "@/components/LocationCard";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, UtensilsCrossed, Map as MapIcon, Loader2 } from "lucide-react";
+import { Search, UtensilsCrossed, Map as MapIcon, Loader2, MapPin, Building2, Tag } from "lucide-react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -172,13 +172,39 @@ export default function Home() {
                 position={[location.latitude, location.longitude]}
                 icon={customIcon}
               >
-                <Popup>
-                  <div className="p-1 min-w-[150px]">
-                    <h3 className="font-display font-bold text-lg mb-1 text-primary">{location.name}</h3>
-                    {location.category && <Badge variant="outline" className="mb-2 text-xs">{location.category}</Badge>}
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {location.description || "No description."}
-                    </p>
+                <Popup className="custom-popup">
+                  <div className="p-2 min-w-[220px] max-w-[280px]">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <h3 className="font-display font-bold text-xl leading-tight text-foreground">{location.name}</h3>
+                      <span className="text-2xl mt-1 shrink-0">{location.icon}</span>
+                    </div>
+
+                    {location.brand && (
+                      <div className="flex items-center gap-1.5 text-sm text-primary font-medium mb-1.5">
+                        <Building2 className="h-3.5 w-3.5" />
+                        <span>{location.brand}</span>
+                      </div>
+                    )}
+
+                    {location.address && (
+                      <div className="flex items-start gap-1.5 text-xs text-muted-foreground mb-3">
+                        <MapPin className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                        <span className="leading-normal">{location.address}</span>
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-border/50">
+                      {location.category && (
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 uppercase tracking-wider font-bold bg-primary/10 text-primary border-none">
+                          {location.category}
+                        </Badge>
+                      )}
+                      {location.tags?.map((tag: string) => (
+                        <Badge key={tag} variant="outline" className="text-[10px] px-1.5 py-0 h-4 border-muted-foreground/30 text-muted-foreground">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                 </Popup>
               </Marker>
