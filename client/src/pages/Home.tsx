@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { useLocations } from "@/hooks/use-locations";
 import { AddLocationDialog } from "@/components/AddLocationDialog";
@@ -61,11 +61,10 @@ export default function Home() {
     );
   }, [locations, search, filterType]);
 
-  // Use a second memo to handle composition state without circular reference
+  // Use a second memo to handle composition state
   const displayedLocations = useMemo(() => {
-    if (isComposing) return filteredLocations; // This is fine now as filteredLocations is defined above
     return filteredLocations;
-  }, [filteredLocations, isComposing]);
+  }, [filteredLocations]);
 
   const handleFlyTo = (lat: number, lng: number) => {
     setSelectedLocation([lat, lng]);
@@ -83,50 +82,63 @@ export default function Home() {
     setIsMobileListOpen(false);
   };
 
-  const SidebarContent = () => (
-    <div className="flex flex-col h-full relative">
-      <div className="p-6 border-b border-border bg-card/50">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="bg-primary/10 p-2.5 rounded-xl">
-            <UtensilsCrossed className="h-6 w-6 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-display font-bold text-foreground">Food Map</h1>
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Company Favorites</p>
-          </div>
-        </div>
-        
-        <div className="relative">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input 
-            placeholder="Search places, categories..." 
-            className="pl-9 rounded-xl bg-secondary/50 border-transparent focus:bg-background transition-all"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onCompositionStart={() => setIsComposing(true)}
-            onCompositionEnd={() => setIsComposing(false)}
-          />
-        </div>
-      </div>
+  const SidebarContent = () => {
+    // Local search state to prevent focus loss during parent re-renders
+    const [localSearch, setLocalSearch] = useState(search);
+    
+    // Sync local search when global search changes (but not vice-versa to avoid loops)
+    useEffect(() => {
+      setLocalSearch(search);
+    }, [search]);
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {displayedLocations.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            <MapIcon className="h-12 w-12 mx-auto mb-3 opacity-20" />
-            <p>No locations found</p>
+    return (
+      <div className="flex flex-col h-full relative">
+        <div className="p-6 border-b border-border bg-card/50">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="bg-primary/10 p-2.5 rounded-xl">
+              <UtensilsCrossed className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-display font-bold text-foreground">Food Map</h1>
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Company Favorites</p>
+            </div>
           </div>
-        ) : (
-          displayedLocations.map((location) => (
-            <LocationCard 
-              key={location.id} 
-              location={location} 
-              onFlyTo={window.innerWidth < 768 ? handleMobileFlyTo : handleFlyTo}
+          
+          <div className="relative">
+            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Search places, categories..." 
+              className="pl-9 rounded-xl bg-secondary/50 border-transparent focus:bg-background transition-all"
+              value={localSearch}
+              onChange={(e) => {
+                setLocalSearch(e.target.value);
+                setSearch(e.target.value);
+              }}
+              onCompositionStart={() => setIsComposing(true)}
+              onCompositionEnd={() => setIsComposing(false)}
             />
-          ))
-        )}
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {displayedLocations.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <MapIcon className="h-12 w-12 mx-auto mb-3 opacity-20" />
+              <p>No locations found</p>
+            </div>
+          ) : (
+            displayedLocations.map((location) => (
+              <LocationCard 
+                key={location.id} 
+                location={location} 
+                onFlyTo={window.innerWidth < 768 ? handleMobileFlyTo : handleFlyTo}
+              />
+            ))
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   if (isLoading) {
     return (
