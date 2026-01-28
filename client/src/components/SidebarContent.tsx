@@ -55,15 +55,15 @@ export function SidebarContent({ locations, onSearch, onFlyTo, initialSearch = "
             <UtensilsCrossed className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-display font-bold text-foreground">Food Map</h1>
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Company Favorites</p>
+            <h1 className="text-2xl font-display font-bold text-foreground">美食地圖</h1>
+            <p className="text-xs text-muted-foreground font-medium tracking-wider">公司周邊美食</p>
           </div>
         </div>
         
         <div className="relative">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input 
-            placeholder="Search places, categories..." 
+            placeholder="搜尋店家、分類..." 
             className="pl-9 rounded-xl bg-secondary/50 border-transparent focus:bg-background transition-all"
             value={localSearch}
             onChange={(e) => handleSearchChange(e.target.value)}
@@ -77,7 +77,7 @@ export function SidebarContent({ locations, onSearch, onFlyTo, initialSearch = "
         {locations.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
             <MapIcon className="h-12 w-12 mx-auto mb-3 opacity-20" />
-            <p>No locations found</p>
+            <p>找不到符合的店家</p>
           </div>
         ) : (
           locations.map((location) => (

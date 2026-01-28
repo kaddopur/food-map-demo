@@ -24,7 +24,7 @@ export function LocationCard({ location, onFlyTo }: LocationCardProps) {
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground mb-4 line-clamp-2 min-h-[40px]">
-          {location.description || "No description provided."}
+          {location.description || "暫無說明"}
         </p>
         
         <div className="flex items-center justify-between text-xs text-muted-foreground mt-2 pt-2 border-t border-border/50">

@@ -82,7 +82,7 @@ export default function Home() {
       <div className="h-screen w-full flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-12 w-12 text-primary animate-spin" />
-          <p className="text-muted-foreground font-medium">Loading tasty spots...</p>
+          <p className="text-muted-foreground font-medium">載入美食中...</p>
         </div>
       </div>
     );
