@@ -26,7 +26,7 @@ L.Marker.prototype.options.icon = DefaultIcon;
 const CENTER: [number, number] = [25.0771545, 121.5733916];
 const ZOOM = 16;
 
-const TILE_LIGHT = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+const TILE_LIGHT = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
 const TILE_DARK = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
 
 function MapController({ selectedCoords }: { selectedCoords: [number, number] | null }) {
