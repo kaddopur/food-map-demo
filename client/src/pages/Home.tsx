@@ -124,12 +124,6 @@ export default function Home() {
           ))
         )}
       </div>
-      
-      <div className="p-4 border-t border-border bg-card/50 backdrop-blur-md">
-        <div className="w-full flex justify-center">
-          <AddLocationDialog />
-        </div>
-      </div>
     </>
   );
 
@@ -153,29 +147,32 @@ export default function Home() {
 
       {/* Main Map Area */}
       <main className="flex-1 relative h-full w-full">
-        {/* Mobile Header Buttons */}
-        <div className="md:hidden absolute top-4 left-4 right-4 z-[1001] flex justify-between items-start pointer-events-none">
+        {/* Mobile Menu Trigger */}
+        <div className="md:hidden absolute top-4 left-4 z-[1001]">
           <Sheet open={isMobileListOpen} onOpenChange={setIsMobileListOpen}>
             <SheetTrigger asChild>
-              <Button size="icon" variant="secondary" className="pointer-events-auto shadow-lg bg-background/80 backdrop-blur-md border border-border">
-                <Menu className="h-5 w-5" />
+              <Button size="icon" variant="secondary" className="shadow-lg bg-background/80 backdrop-blur-md border border-border h-12 w-12 rounded-xl">
+                <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="p-0 w-[85vw] sm:w-[400px] flex flex-col">
               <SidebarContent />
             </SheetContent>
           </Sheet>
+        </div>
 
+        {/* Mobile Theme Toggle */}
+        <div className="md:hidden absolute top-4 right-4 z-[1001]">
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-3 rounded-xl bg-background/80 backdrop-blur-md border border-border shadow-lg text-foreground pointer-events-auto"
+            className="p-3 h-12 w-12 flex items-center justify-center rounded-xl bg-background/80 backdrop-blur-md border border-border shadow-lg text-foreground"
           >
             {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </button>
         </div>
 
         {/* Filter Buttons Overlay */}
-        <div className="absolute top-[72px] md:top-4 left-1/2 -translate-x-1/2 z-[1000] flex gap-2 bg-background/80 backdrop-blur-md p-1.5 rounded-2xl border border-border shadow-xl overflow-x-auto max-w-[90vw] no-scrollbar">
+        <div className="absolute top-20 md:top-4 left-1/2 -translate-x-1/2 z-[1000] flex gap-2 bg-background/80 backdrop-blur-md p-1.5 rounded-2xl border border-border shadow-xl overflow-x-auto max-w-[90vw] no-scrollbar">
           {filterButtons.map((btn) => (
             <button
               key={btn.id}
@@ -263,11 +260,6 @@ export default function Home() {
           
           <MapController selectedCoords={selectedLocation} />
         </MapContainer>
-
-        {/* Mobile FAB */}
-        <div className="md:hidden absolute bottom-6 right-6 z-[1000]">
-          <AddLocationDialog />
-        </div>
       </main>
     </div>
   );
