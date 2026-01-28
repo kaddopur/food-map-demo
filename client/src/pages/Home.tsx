@@ -75,28 +75,17 @@ export default function Home() {
     setIsMobileListOpen(false);
   };
 
-  const SidebarContent = ({ isMobile = false }: { isMobile?: boolean }) => (
-    <>
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full relative">
       <div className="p-6 border-b border-border bg-card/50">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2.5 rounded-xl">
-              <UtensilsCrossed className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-display font-bold text-foreground">Food Map</h1>
-              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Company Favorites</p>
-            </div>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="bg-primary/10 p-2.5 rounded-xl">
+            <UtensilsCrossed className="h-6 w-6 text-primary" />
           </div>
-          {!isMobile && (
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2.5 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors text-foreground shadow-sm"
-              title="Toggle Theme"
-            >
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </button>
-          )}
+          <div>
+            <h1 className="text-2xl font-display font-bold text-foreground">Food Map</h1>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Company Favorites</p>
+          </div>
         </div>
         
         <div className="relative">
@@ -126,7 +115,7 @@ export default function Home() {
           ))
         )}
       </div>
-    </>
+    </div>
   );
 
   if (isLoading) {
@@ -159,14 +148,19 @@ export default function Home() {
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="p-0 w-[85vw] sm:w-[400px] flex flex-col">
-                <div className="flex justify-end p-2 md:hidden">
-                  <Button variant="ghost" size="icon" onClick={() => setIsMobileListOpen(false)} className="rounded-full">
-                    <X className="h-6 w-6" />
-                  </Button>
-                </div>
-                <SidebarContent isMobile={true} />
-              </SheetContent>
+              <SheetContent side="left" className="p-0 w-[85vw] sm:w-[400px] flex flex-col border-none">
+              <div className="absolute top-4 right-4 z-50">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => setIsMobileListOpen(false)} 
+                  className="rounded-xl bg-background/50 backdrop-blur-md border border-border h-10 w-10 hover:bg-background/80"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+              <SidebarContent />
+            </SheetContent>
             </Sheet>
           </div>
 
