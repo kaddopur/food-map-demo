@@ -111,20 +111,22 @@ export function SidebarContent({ locations, onSearch, onFlyTo, initialSearch = "
       </div>
 
       {/* Location List */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-2">
+      <div className="flex-1 overflow-y-auto">
         {locations.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
             <MapIcon className="h-12 w-12 mx-auto mb-3 opacity-20" />
             <p>找不到地點</p>
           </div>
         ) : (
-          locations.map((location) => (
-            <LocationCard 
-              key={location.id} 
-              location={location} 
-              onFlyTo={onFlyTo}
-            />
-          ))
+          <div className="divide-y divide-border">
+            {locations.map((location) => (
+              <LocationCard 
+                key={location.id} 
+                location={location} 
+                onFlyTo={onFlyTo}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>
