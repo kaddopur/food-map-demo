@@ -198,8 +198,8 @@ export default function Home() {
                 <Popup className="custom-popup">
                   <div className="p-2 min-w-[220px] max-w-[280px]">
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-display font-bold text-xl leading-tight text-foreground">{location.name}</h3>
-                      <span className="text-2xl mt-1 shrink-0">{location.icon}</span>
+                      <h3 className="font-display font-bold text-base leading-tight text-foreground">{location.name}</h3>
+                      <span className="text-xl mt-0.5 shrink-0">{location.icon}</span>
                     </div>
 
                     {location.brand && (
