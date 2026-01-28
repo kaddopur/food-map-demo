@@ -223,7 +223,7 @@ export default function Home() {
           
           {filteredLocations.map((location) => {
             const customIcon = L.divIcon({
-              html: `<div style="font-size: 24px; background: ${theme === 'dark' ? '#1e293b' : 'white'}; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 2px solid hsl(var(--primary)); box-shadow: 0 2px 4px rgba(0,0,0,0.2);">${location.icon || "📍"}</div>`,
+              html: `<div style="font-size: 24px; background: ${theme === 'dark' ? '#1e1e1e' : 'white'}; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 2px solid ${theme === 'dark' ? 'hsl(265, 100%, 80%)' : 'hsl(var(--primary))'}; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">${location.icon || "📍"}</div>`,
               className: "custom-div-icon",
               iconSize: [40, 40],
               iconAnchor: [20, 40],

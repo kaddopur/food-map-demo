@@ -36,24 +36,28 @@
 }
 
 .dark {
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
+  --background: 260 8% 8%; /* #121212 - Material Design baseline */
+  --foreground: 0 0% 100%;
   
-  --primary: 15 80% 60%;
-  --primary-foreground: 222 47% 11%;
+  --primary: 265 100% 80%; /* Material Dark Theme Primary: Light Purple */
+  --primary-foreground: 260 10% 10%;
   
-  --secondary: 217 19% 27%;
-  --secondary-foreground: 210 40% 98%;
+  --secondary: 260 8% 14%; /* Elevated surface */
+  --secondary-foreground: 0 0% 100%;
   
-  --muted: 217 19% 27%;
-  --muted-foreground: 215 20% 65%;
+  --card: 260 8% 12%; /* Material surface */
+  --card-foreground: 0 0% 87%; /* High emphasis text */
+  --card-border: 260 8% 18%;
   
-  --accent: 170 50% 45%;
-  --accent-foreground: 210 40% 98%;
+  --muted: 260 8% 16%;
+  --muted-foreground: 0 0% 60%; /* Medium emphasis text */
   
-  --border: 217 19% 27%;
-  --input: 217 19% 27%;
-  --ring: 15 80% 60%;
+  --accent: 180 100% 80%; /* Cyan accent */
+  --accent-foreground: 260 10% 10%;
+  
+  --border: 260 8% 18%;
+  --input: 260 8% 18%;
+  --ring: 265 100% 80%;
 }
 
 @layer base {
