@@ -1,18 +1,16 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { useLocations } from "@/hooks/use-locations";
-import { AddLocationDialog } from "@/components/AddLocationDialog";
-import { LocationCard } from "@/components/LocationCard";
+import { SidebarContent } from "@/components/SidebarContent";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search, UtensilsCrossed, Map as MapIcon, Loader2, MapPin, Building2, Tag, Sun, Moon, List, Menu, X } from "lucide-react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useTheme } from "@/hooks/use-theme";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
-// Initial Center
 const CENTER: [number, number] = [25.0771545, 121.5733916];
 const ZOOM = 16;
 
@@ -32,10 +30,9 @@ function MapController({ selectedCoords }: { selectedCoords: [number, number] | 
 }
 
 export default function Home() {
-  const { data: locations, isLoading, error } = useLocations();
+  const { data: locations, isLoading } = useLocations();
   const { theme, setTheme } = useTheme();
   const [search, setSearch] = useState("");
-  const [isComposing, setIsComposing] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
   const [isMobileListOpen, setIsMobileListOpen] = useState(false);
@@ -45,7 +42,6 @@ export default function Home() {
     
     let filtered = locations;
     
-    // Filter by type
     if (filterType === "fast_food") {
       filtered = filtered.filter(loc => loc.category === "burger" || loc.category === "chicken" || loc.category === "sandwich" || loc.category === "dumplings" || loc.category === "beef_bowl" || loc.category === "breakfast");
     } else if (filterType === "cafe") {
@@ -61,14 +57,18 @@ export default function Home() {
     );
   }, [locations, search, filterType]);
 
-  // Use a second memo to handle composition state
-  const displayedLocations = useMemo(() => {
-    return filteredLocations;
-  }, [filteredLocations]);
-
-  const handleFlyTo = (lat: number, lng: number) => {
+  const handleFlyTo = useCallback((lat: number, lng: number) => {
     setSelectedLocation([lat, lng]);
-  };
+  }, []);
+
+  const handleMobileFlyTo = useCallback((lat: number, lng: number) => {
+    handleFlyTo(lat, lng);
+    setIsMobileListOpen(false);
+  }, [handleFlyTo]);
+
+  const handleSearch = useCallback((value: string) => {
+    setSearch(value);
+  }, []);
 
   const filterButtons = [
     { id: "all", label: "全部", icon: "🍱" },
@@ -76,69 +76,6 @@ export default function Home() {
     { id: "cafe", label: "咖啡", icon: "☕" },
     { id: "bubble_tea", label: "手搖", icon: "🧋" },
   ];
-
-  const handleMobileFlyTo = (lat: number, lng: number) => {
-    handleFlyTo(lat, lng);
-    setIsMobileListOpen(false);
-  };
-
-  const SidebarContent = () => {
-    // Local search state to prevent focus loss during parent re-renders
-    const [localSearch, setLocalSearch] = useState(search);
-    
-    // Sync local search when global search changes (but not vice-versa to avoid loops)
-    useEffect(() => {
-      setLocalSearch(search);
-    }, [search]);
-
-    return (
-      <div className="flex flex-col h-full relative">
-        <div className="p-6 border-b border-border bg-card/50">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="bg-primary/10 p-2.5 rounded-xl">
-              <UtensilsCrossed className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-display font-bold text-foreground">Food Map</h1>
-              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Company Favorites</p>
-            </div>
-          </div>
-          
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search places, categories..." 
-              className="pl-9 rounded-xl bg-secondary/50 border-transparent focus:bg-background transition-all"
-              value={localSearch}
-              onChange={(e) => {
-                setLocalSearch(e.target.value);
-                setSearch(e.target.value);
-              }}
-              onCompositionStart={() => setIsComposing(true)}
-              onCompositionEnd={() => setIsComposing(false)}
-            />
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {displayedLocations.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <MapIcon className="h-12 w-12 mx-auto mb-3 opacity-20" />
-              <p>No locations found</p>
-            </div>
-          ) : (
-            displayedLocations.map((location) => (
-              <LocationCard 
-                key={location.id} 
-                location={location} 
-                onFlyTo={window.innerWidth < 768 ? handleMobileFlyTo : handleFlyTo}
-              />
-            ))
-          )}
-        </div>
-      </div>
-    );
-  };
 
   if (isLoading) {
     return (
@@ -155,7 +92,12 @@ export default function Home() {
     <div className="flex h-screen w-full overflow-hidden bg-background">
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex flex-col w-[400px] border-r border-border bg-background/50 backdrop-blur-xl h-full z-[100] shadow-xl">
-        <SidebarContent />
+        <SidebarContent 
+          locations={filteredLocations}
+          onSearch={handleSearch}
+          onFlyTo={handleFlyTo}
+          initialSearch={search}
+        />
       </aside>
 
       {/* Main Map Area */}
@@ -171,18 +113,23 @@ export default function Home() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="p-0 w-[85vw] sm:w-[400px] flex flex-col border-none [&>button]:hidden">
-              <div className="absolute top-4 right-4 z-50">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={() => setIsMobileListOpen(false)} 
-                  className="rounded-xl h-10 w-10 hover:bg-background/80"
-                >
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
-              <SidebarContent />
-            </SheetContent>
+                <div className="absolute top-4 right-4 z-50">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => setIsMobileListOpen(false)} 
+                    className="rounded-xl h-10 w-10 hover:bg-background/80"
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+                <SidebarContent 
+                  locations={filteredLocations}
+                  onSearch={handleSearch}
+                  onFlyTo={handleMobileFlyTo}
+                  initialSearch={search}
+                />
+              </SheetContent>
             </Sheet>
           </div>
 
@@ -233,7 +180,7 @@ export default function Home() {
             url={theme === "dark" ? TILE_DARK : TILE_LIGHT}
           />
           
-          {displayedLocations.map((location) => {
+          {filteredLocations.map((location) => {
             const customIcon = L.divIcon({
               html: `<div style="font-size: 24px; background: ${theme === 'dark' ? '#1e1e1e' : 'white'}; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 2px solid ${theme === 'dark' ? 'hsl(265, 100%, 80%)' : 'hsl(var(--primary))'}; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">${location.icon || "📍"}</div>`,
               className: "custom-div-icon",
