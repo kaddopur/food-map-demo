@@ -5,7 +5,7 @@ import { AddLocationDialog } from "@/components/AddLocationDialog";
 import { LocationCard } from "@/components/LocationCard";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, UtensilsCrossed, Map as MapIcon, Loader2, MapPin, Building2, Tag, Sun, Moon, List, Menu } from "lucide-react";
+import { Search, UtensilsCrossed, Map as MapIcon, Loader2, MapPin, Building2, Tag, Sun, Moon, List, Menu, X } from "lucide-react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useTheme } from "@/hooks/use-theme";
@@ -75,7 +75,7 @@ export default function Home() {
     setIsMobileListOpen(false);
   };
 
-  const SidebarContent = () => (
+  const SidebarContent = ({ isMobile = false }: { isMobile?: boolean }) => (
     <>
       <div className="p-6 border-b border-border bg-card/50">
         <div className="flex items-center justify-between mb-6">
@@ -88,13 +88,15 @@ export default function Home() {
               <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Company Favorites</p>
             </div>
           </div>
-          <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2.5 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors text-foreground shadow-sm"
-            title="Toggle Theme"
-          >
-            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          </button>
+          {!isMobile && (
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-2.5 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors text-foreground shadow-sm"
+              title="Toggle Theme"
+            >
+              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </button>
+          )}
         </div>
         
         <div className="relative">
@@ -158,7 +160,12 @@ export default function Home() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="p-0 w-[85vw] sm:w-[400px] flex flex-col">
-                <SidebarContent />
+                <div className="flex justify-end p-2 md:hidden">
+                  <Button variant="ghost" size="icon" onClick={() => setIsMobileListOpen(false)} className="rounded-full">
+                    <X className="h-6 w-6" />
+                  </Button>
+                </div>
+                <SidebarContent isMobile={true} />
               </SheetContent>
             </Sheet>
           </div>
