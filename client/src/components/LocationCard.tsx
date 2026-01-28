@@ -4,14 +4,14 @@ import { Navigation } from "lucide-react";
 
 interface LocationCardProps {
   location: Location;
-  onFlyTo: (lat: number, lng: number) => void;
+  onSelect: () => void;
 }
 
-export function LocationCard({ location, onFlyTo }: LocationCardProps) {
+export function LocationCard({ location, onSelect }: LocationCardProps) {
   return (
     <div 
       className="group flex items-center gap-3 px-4 py-3 bg-background hover:bg-secondary/50 active:bg-secondary transition-colors cursor-pointer"
-      onClick={() => onFlyTo(location.latitude, location.longitude)}
+      onClick={onSelect}
       data-testid={`list-item-location-${location.id}`}
     >
       {/* Left Area - Icon for identification */}

@@ -1,10 +1,9 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { useLocations } from "@/hooks/use-locations";
 import { SidebarContent } from "@/components/SidebarContent";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, UtensilsCrossed, Map as MapIcon, Loader2, MapPin, Building2, Tag, Sun, Moon, List, Menu, X } from "lucide-react";
+import { Loader2, MapPin, Building2, Sun, Moon, Menu, X } from "lucide-react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useTheme } from "@/hooks/use-theme";
@@ -17,15 +16,37 @@ const ZOOM = 16;
 const TILE_LIGHT = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
 const TILE_DARK = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
 
-function MapController({ selectedCoords }: { selectedCoords: [number, number] | null }) {
+function MapController({ 
+  selectedLocationId, 
+  locations,
+  markerRefs 
+}: { 
+  selectedLocationId: number | null;
+  locations: any[];
+  markerRefs: React.MutableRefObject<Map<number, L.Marker>>;
+}) {
   const map = useMap();
   
-  if (selectedCoords) {
-    map.flyTo(selectedCoords, 18, {
-      animate: true,
-      duration: 1.5
-    });
-  }
+  useEffect(() => {
+    if (selectedLocationId !== null) {
+      const location = locations.find(loc => loc.id === selectedLocationId);
+      if (location) {
+        map.flyTo([location.latitude, location.longitude], 18, {
+          animate: true,
+          duration: 1.5
+        });
+        
+        // Open popup after flying
+        setTimeout(() => {
+          const marker = markerRefs.current.get(selectedLocationId);
+          if (marker) {
+            marker.openPopup();
+          }
+        }, 1600);
+      }
+    }
+  }, [selectedLocationId, locations, map, markerRefs]);
+  
   return null;
 }
 
@@ -33,9 +54,10 @@ export default function Home() {
   const { data: locations, isLoading } = useLocations();
   const { theme, setTheme } = useTheme();
   const [search, setSearch] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(null);
+  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
   const [isMobileListOpen, setIsMobileListOpen] = useState(false);
+  const markerRefs = useRef<Map<number, L.Marker>>(new Map());
 
   const filteredLocations = useMemo(() => {
     if (!locations) return [];
@@ -57,14 +79,14 @@ export default function Home() {
     );
   }, [locations, search, filterType]);
 
-  const handleFlyTo = useCallback((lat: number, lng: number) => {
-    setSelectedLocation([lat, lng]);
+  const handleSelectLocation = useCallback((id: number) => {
+    setSelectedLocationId(id);
   }, []);
 
-  const handleMobileFlyTo = useCallback((lat: number, lng: number) => {
-    handleFlyTo(lat, lng);
+  const handleMobileSelectLocation = useCallback((id: number) => {
+    handleSelectLocation(id);
     setIsMobileListOpen(false);
-  }, [handleFlyTo]);
+  }, [handleSelectLocation]);
 
   const handleSearch = useCallback((value: string) => {
     setSearch(value);
@@ -95,7 +117,7 @@ export default function Home() {
         <SidebarContent 
           locations={filteredLocations}
           onSearch={handleSearch}
-          onFlyTo={handleFlyTo}
+          onSelectLocation={handleSelectLocation}
           initialSearch={search}
         />
       </aside>
@@ -126,7 +148,7 @@ export default function Home() {
                 <SidebarContent 
                   locations={filteredLocations}
                   onSearch={handleSearch}
-                  onFlyTo={handleMobileFlyTo}
+                  onSelectLocation={handleMobileSelectLocation}
                   initialSearch={search}
                 />
               </SheetContent>
@@ -194,6 +216,11 @@ export default function Home() {
                 key={location.id} 
                 position={[location.latitude, location.longitude]}
                 icon={customIcon}
+                ref={(ref) => {
+                  if (ref) {
+                    markerRefs.current.set(location.id, ref);
+                  }
+                }}
               >
                 <Popup className="custom-popup">
                   <div className="p-2 min-w-[220px] max-w-[280px]">
@@ -234,7 +261,11 @@ export default function Home() {
             );
           })}
           
-          <MapController selectedCoords={selectedLocation} />
+          <MapController 
+            selectedLocationId={selectedLocationId} 
+            locations={filteredLocations}
+            markerRefs={markerRefs}
+          />
         </MapContainer>
       </main>
     </div>

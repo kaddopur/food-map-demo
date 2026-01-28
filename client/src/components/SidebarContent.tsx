@@ -6,11 +6,11 @@ import type { Location } from "@shared/schema";
 interface SidebarContentProps {
   locations: Location[];
   onSearch: (value: string) => void;
-  onFlyTo: (lat: number, lng: number) => void;
+  onSelectLocation: (id: number) => void;
   initialSearch?: string;
 }
 
-export function SidebarContent({ locations, onSearch, onFlyTo, initialSearch = "" }: SidebarContentProps) {
+export function SidebarContent({ locations, onSearch, onSelectLocation, initialSearch = "" }: SidebarContentProps) {
   const [localSearch, setLocalSearch] = useState(initialSearch);
   const [isFocused, setIsFocused] = useState(false);
   const isComposingRef = useRef(false);
@@ -123,7 +123,7 @@ export function SidebarContent({ locations, onSearch, onFlyTo, initialSearch = "
               <LocationCard 
                 key={location.id} 
                 location={location} 
-                onFlyTo={onFlyTo}
+                onSelect={() => onSelectLocation(location.id)}
               />
             ))}
           </div>
