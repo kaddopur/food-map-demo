@@ -157,22 +157,33 @@ export default function Home() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           
-          {filteredLocations.map((location) => (
-            <Marker 
-              key={location.id} 
-              position={[location.latitude, location.longitude]}
-            >
-              <Popup>
-                <div className="p-1">
-                  <h3 className="font-display font-bold text-lg mb-1 text-primary">{location.name}</h3>
-                  <Badge variant="outline" className="mb-2 text-xs">{location.category}</Badge>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {location.description || "No description."}
-                  </p>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
+          {filteredLocations.map((location) => {
+            const customIcon = L.divIcon({
+              html: `<div style="font-size: 24px; background: white; border-radius: 50%; width: 40px; height: 40px; display: flex; items-center; justify-content: center; border: 2px solid hsl(var(--primary)); box-shadow: 0 2px 4px rgba(0,0,0,0.2);">${location.icon || "📍"}</div>`,
+              className: "custom-div-icon",
+              iconSize: [40, 40],
+              iconAnchor: [20, 40],
+              popupAnchor: [0, -40],
+            });
+
+            return (
+              <Marker 
+                key={location.id} 
+                position={[location.latitude, location.longitude]}
+                icon={customIcon}
+              >
+                <Popup>
+                  <div className="p-1 min-w-[150px]">
+                    <h3 className="font-display font-bold text-lg mb-1 text-primary">{location.name}</h3>
+                    {location.category && <Badge variant="outline" className="mb-2 text-xs">{location.category}</Badge>}
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {location.description || "No description."}
+                    </p>
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
           
           <MapController selectedCoords={selectedLocation} />
         </MapContainer>

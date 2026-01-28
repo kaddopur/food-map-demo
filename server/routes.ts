@@ -4,10 +4,14 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 
+import { readFileSync } from "fs";
+import { join } from "path";
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // ... existing routes ...
   app.get(api.locations.list.path, async (req, res) => {
     const locations = await storage.getLocations();
     res.json(locations);
@@ -43,31 +47,35 @@ export async function registerRoutes(
 // Seed data
 async function seedDatabase() {
   const existingItems = await storage.getLocations();
-  if (existingItems.length === 0) {
-    // Center: 25.0771545, 121.5733916
-    await storage.createLocation({
-      name: "內湖科技園區服務大樓",
-      description: "地圖中心點範例",
-      latitude: 25.0771545,
-      longitude: 121.5733916,
-      category: "landmark"
-    });
-    
-    await storage.createLocation({
-      name: "覺旅咖啡 Journey Kaffe",
-      description: "知名的咖啡廳，適合工作",
-      latitude: 25.0805, 
-      longitude: 121.5725,
-      category: "cafe"
-    });
-
-    await storage.createLocation({
-      name: "金泰日式料理",
-      description: "人氣海鮮蓋飯",
-      latitude: 25.0790,
-      longitude: 121.5760,
-      category: "restaurant"
-    });
+  if (existingItems.length <= 3) {
+    try {
+      const dataPath = join(process.cwd(), "attached_assets", "workshop_data_complete_1769572591447.json");
+      const rawData = readFileSync(dataPath, "utf-8");
+      const data = JSON.parse(rawData);
+      
+      for (const place of data.places) {
+        await storage.createLocation({
+          name: place.name,
+          description: place.address || place.brand || "",
+          latitude: place.lat,
+          longitude: place.lng,
+          category: place.category,
+          icon: place.icon
+        });
+      }
+      console.log(`Seeded ${data.places.length} places from JSON`);
+    } catch (err) {
+      console.error("Failed to seed from JSON, falling back to basic seed:", err);
+      // Center: 25.0771545, 121.5733916
+      await storage.createLocation({
+        name: "內湖科技園區服務大樓",
+        description: "地圖中心點範例",
+        latitude: 25.0771545,
+        longitude: 121.5733916,
+        category: "landmark",
+        icon: "🏢"
+      });
+    }
   }
 }
 

@@ -9,6 +9,7 @@ export const locations = pgTable("locations", {
   latitude: doublePrecision("latitude").notNull(),
   longitude: doublePrecision("longitude").notNull(),
   category: text("category").default("general"),
+  icon: text("icon"),
 });
 
 export const insertLocationSchema = createInsertSchema(locations).omit({ id: true });
