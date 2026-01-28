@@ -5,9 +5,10 @@ import { AddLocationDialog } from "@/components/AddLocationDialog";
 import { LocationCard } from "@/components/LocationCard";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, UtensilsCrossed, Map as MapIcon, Loader2, MapPin, Building2, Tag } from "lucide-react";
+import { Search, UtensilsCrossed, Map as MapIcon, Loader2, MapPin, Building2, Tag, Sun, Moon } from "lucide-react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useTheme } from "@/hooks/use-theme";
 
 // Fix Leaflet's default icon path issues in React
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -25,6 +26,9 @@ L.Marker.prototype.options.icon = DefaultIcon;
 const CENTER: [number, number] = [25.0771545, 121.5733916];
 const ZOOM = 16;
 
+const TILE_LIGHT = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+const TILE_DARK = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+
 function MapController({ selectedCoords }: { selectedCoords: [number, number] | null }) {
   const map = useMap();
   
@@ -39,6 +43,7 @@ function MapController({ selectedCoords }: { selectedCoords: [number, number] | 
 
 export default function Home() {
   const { data: locations, isLoading, error } = useLocations();
+  const { theme, setTheme } = useTheme();
   const [search, setSearch] = useState("");
   const [selectedLocation, setSelectedLocation] = useState<[number, number] | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
@@ -100,15 +105,25 @@ export default function Home() {
     <div className="flex h-screen w-full overflow-hidden bg-background">
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex flex-col w-[400px] border-r border-border bg-background/50 backdrop-blur-xl h-full z-10 shadow-xl">
-        <div className="p-6 border-b border-border bg-white/50">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="bg-primary/10 p-2.5 rounded-xl">
-              <UtensilsCrossed className="h-6 w-6 text-primary" />
+        <div className="p-6 border-b border-border bg-card/50">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary/10 p-2.5 rounded-xl">
+                <UtensilsCrossed className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-display font-bold text-foreground">Food Map</h1>
+                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Company Favorites</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-display font-bold text-foreground">Food Map</h1>
-              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Company Favorites</p>
-            </div>
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-2.5 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors text-foreground shadow-sm"
+              title="Toggle Theme"
+              data-testid="button-theme-toggle"
+            >
+              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </button>
           </div>
           
           <div className="relative">
@@ -139,7 +154,7 @@ export default function Home() {
           )}
         </div>
         
-        <div className="p-4 border-t border-border bg-white/50 backdrop-blur-md">
+        <div className="p-4 border-t border-border bg-card/50 backdrop-blur-md">
           <div className="w-full flex justify-center">
             <AddLocationDialog />
           </div>
@@ -148,8 +163,19 @@ export default function Home() {
 
       {/* Main Map Area */}
       <main className="flex-1 relative h-full w-full">
+        {/* Theme Toggle Mobile */}
+        <div className="md:hidden absolute top-4 right-4 z-[1001]">
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="p-3 rounded-xl bg-background/80 backdrop-blur-md border border-border shadow-lg text-foreground"
+            data-testid="button-theme-toggle-mobile"
+          >
+            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </button>
+        </div>
+
         {/* Filter Buttons Overlay */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex gap-2 bg-background/80 backdrop-blur-md p-1.5 rounded-2xl border border-border shadow-xl overflow-x-auto max-w-[90vw] no-scrollbar">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex gap-2 bg-background/80 backdrop-blur-md p-1.5 rounded-2xl border border-border shadow-xl overflow-x-auto max-w-[70vw] md:max-w-[90vw] no-scrollbar">
           {filterButtons.map((btn) => (
             <button
               key={btn.id}
@@ -164,28 +190,26 @@ export default function Home() {
               data-testid={`button-filter-${btn.id}`}
             >
               <span>{btn.icon}</span>
-              <span>{btn.label}</span>
+              <span className="hidden sm:inline">{btn.label}</span>
             </button>
           ))}
         </div>
 
         {/* Mobile Header / Search Overlay */}
-        <div className="md:hidden absolute top-4 left-4 right-4 z-[1000] flex gap-2">
+        <div className="md:hidden absolute top-4 left-4 right-20 z-[1000] flex gap-2">
            <div className="flex-1 relative shadow-lg rounded-xl">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
             <Input 
               placeholder="Search..." 
-              className="pl-9 h-12 rounded-xl bg-white border-none shadow-sm text-base"
+              className="pl-9 h-12 rounded-xl bg-background/80 backdrop-blur-md border-border shadow-sm text-base"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
            </div>
-           <div className="bg-white rounded-xl shadow-lg h-12 w-12 flex items-center justify-center">
-             <UtensilsCrossed className="h-6 w-6 text-primary" />
-           </div>
         </div>
 
         <MapContainer 
+          key={theme} // Force re-render on theme change to update tiles
           center={CENTER} 
           zoom={ZOOM} 
           scrollWheelZoom={true} 
@@ -193,13 +217,13 @@ export default function Home() {
           zoomControl={false}
         >
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution={theme === "dark" ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>' : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}
+            url={theme === "dark" ? TILE_DARK : TILE_LIGHT}
           />
           
           {filteredLocations.map((location) => {
             const customIcon = L.divIcon({
-              html: `<div style="font-size: 24px; background: white; border-radius: 50%; width: 40px; height: 40px; display: flex; items-center; justify-content: center; border: 2px solid hsl(var(--primary)); box-shadow: 0 2px 4px rgba(0,0,0,0.2);">${location.icon || "📍"}</div>`,
+              html: `<div style="font-size: 24px; background: ${theme === 'dark' ? '#1e293b' : 'white'}; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 2px solid hsl(var(--primary)); box-shadow: 0 2px 4px rgba(0,0,0,0.2);">${location.icon || "📍"}</div>`,
               className: "custom-div-icon",
               iconSize: [40, 40],
               iconAnchor: [20, 40],
